@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="https://live.zwidgets.com/js-sdk/1.1/ZohoEmbededAppSDK.min.js"></script>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container mt-5">
+
+      <div class="container search_area d-flex my-3">
+        <input class="w-75 p-2 m-1" id="input_txt" type="text" placeholder="Enter filing key" name="search">
+        <button class="w-25 p-2 m-1 btn btn-success" type="button" id="search_btn"><i class="fa fa-search"></i><label class="px-2"> Search </label></button>
+      </div>
+
+      <div class="container isRdl_area my-3">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="rdl_btn">
+          <label class="form-check-label" for="flexRadioDefault1">
+            RDL
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="rbl_btn">
+          <label class="form-check-label" for="flexRadioDefault2">
+            RBL
+          </label>
+        </div>
+      </div>
+
+      <div id="decisionDate_area" class="container d-none decisionDate_area my-3">
+        <label>Decision Date: </label>
+        <div>
+          <input type="date" id="d_date" name="d_date">
+        </div>
+      </div>
+
+      <div class="container result_area my-3">
+        <table class="table table-dark">
+          <thead id="tb_thread">
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">On RDL</th>
+              <th scope="col">Decision</th>
+              <th scope="col">Effective Date</th>
+              <th scope="col">Rating (0-100)</th>
+            </tr>
+          </thead>
+          <tbody id="tb_body">
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    
+    <script src="../lib/script.js"></script>
+  </body>
+</html>
