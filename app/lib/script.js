@@ -1,29 +1,28 @@
 
-var data = {
-    claim: []
-}
+// var data = {
+//     claim: []
+// }
 
-var dummy = {
-    claims : [{
-        id: 123,
-        claim: "Claim",
-        isRDL: true,
-        status: 1,
-        date: new Date(),
-        rating: 10
-    },{
-        id: 456,
-        claim: "Claim",
-        isRDL: false,
-        status: 0,
-        date: new Date(),
-        rating: 50
-    }]
-}
+// var dummy = {
+//     claims : [{
+//         id: 123,
+//         claim: "Claim",
+//         isRDL: true,
+//         status: 1,
+//         date: new Date(),
+//         rating: 10
+//     },{
+//         id: 456,
+//         claim: "Claim",
+//         isRDL: false,
+//         status: 0,
+//         date: new Date(),
+//         rating: 50
+//     }]
+// }
 
-//sample data
-data = dummy;
-
+// //sample data
+// data = dummy;
 
 document.getElementById("rdl_btn").addEventListener("click", function() {  
     document.getElementById("decisionDate_area").classList.remove("d-none");
@@ -38,7 +37,7 @@ function displayData(_data){
     var statusA = _data.status == 0 ? 'selected' : '';
     var statusD = _data.status == 1 ? 'selected' : '';
     var option_content = document.createElement("tr");
-    option_content.innerHTML = '<th scope="row"> <span>'+_data.claim+'</span> </th> '+
+    option_content.innerHTML = '<th scope="row"> <span>'+_data.Claim_SubType+'</span> </th> '+
     '<td> <span>'+rdl_opt+'</span> </td> '+
     '<td> <select id="status_btn" class="form-select" aria-label="status"> <option value="1" '+statusA+'>Approved</option> <option value="0" '+statusD+'>Denied</option> </select> </td> '+
     '<td> <span>'+new Date(_data.date).toLocaleDateString("en-US", options)+'</span> </td> '+
@@ -46,14 +45,17 @@ function displayData(_data){
     document.getElementById("tb_body").appendChild(option_content);
 }
 
-function seach_result(){
-
-    data.claims.forEach(function(res){
-
-       var result = res
-       displayData(res);
-
+function search_result(){
+    var filingKey = document.getElementById("input_txt").value;
+    ZOHO.embeddedApp.init()
+    .then(function(data){
+        ZOHO.CRM.API.searchRecord({Entity:"Claims",Type:"criteria",Query:'((Name:equals:'+filingKey+') and (Claim_Status:equals:Packet Sent))', page:1,per_page:15})
+        .then(function(data){
+            let claims = data.data;
+            claims.forEach(function(res){
+                var result = res;
+                displayData(res);
+            })
+        })
     })
 }
-
-seach_result();
