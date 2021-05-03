@@ -10,13 +10,12 @@
     <div class="container mt-5">
 
       <div class="container search_area d-flex my-3">
-        <input class="w-75 p-2 m-1" id="input_txt" type="text" placeholder="Enter filing key" name="search">
-        <button class="w-25 p-2 m-1 btn btn-success" type="button" id="search_btn" onclick="search_result()"><i class="fa fa-search"></i><label class="px-2"> Search </label></button>
+        <input class="w-100 p-2 m-1" id="input_txt" type="text" placeholder="Enter filing key" name="search">
       </div>
 
       <div class="container isRdl_area my-3">
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="flexRadioDefault" id="rdl_btn">
+          <input class="form-check-input" type="radio" name="flexRadioDefault" checked="checked" id="rdl_btn">
           <label class="form-check-label" for="flexRadioDefault1">
             RDL
           </label>
@@ -29,15 +28,21 @@
         </div>
       </div>
 
-      <div id="decisionDate_area" class="container d-none decisionDate_area my-3">
+      <div id="decisionDate_area" class="container decisionDate_area my-3">
         <label>Decision Date: </label>
         <div>
           <input type="date" id="d_date" name="d_date">
+          <p id="d_date_warning" class="text-danger d-none">Decision Date is required with RDL</p>
         </div>
       </div>
 
+      <div class="container search_area d-flex my-3">
+        <button class="w-100 p-2 m-1 btn btn-success" type="submit" id="search_btn" onclick="search_result()"><i class="fa fa-search"></i><label class="px-2"> Search </label></button>
+      </div>
+
       <div class="container result_area my-3">
-        <table class="table table-dark">
+        <h2 id="no_result" class="d-none">No Results Found!</h2>
+        <table id="tb_result" class="table table-dark d-none">
           <thead id="tb_thread">
             <tr>
               <th scope="col"></th>
