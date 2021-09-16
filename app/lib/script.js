@@ -94,7 +94,6 @@ function field_call(el,value,field){
 }
 
 function displayData(res_data, invoice_data){
-   console.log(invoice_data.data,"data invoice");
    
    document.getElementById("tb_result").classList.remove("d-none");
    document.getElementById("submit_area").classList.remove("d-none");
@@ -104,10 +103,11 @@ function displayData(res_data, invoice_data){
 
    document.getElementById("decisionDate_area").classList.remove("d-none");
    document.getElementById("isRdl_area").classList.remove("d-none");
-
+   
    var option_content = document.createElement("tr");
    var laterality = (res_data.Laterality != null && res_data.Laterality != "N/A") ? " - "+res_data.Laterality : "";
-   option_content.innerHTML = '<th scope="row"><input class="d-none data_id" value="'+res_data.id+'"><span>'+res_data.Claim_SubType+''+laterality+'</span> </th> '+
+   var Date_Packet_Sent = (res_data.Date_Packet_Sent != null) ? res_data.Date_Packet_Sent+" - " : "";
+   option_content.innerHTML = '<th scope="row"><input class="d-none data_id" value="'+res_data.id+'"><span>'+Date_Packet_Sent+res_data.Claim_Categories+" - "+res_data.Claim_SubType+laterality+'</span> </th> '+
    '<td> <select id="isRdl_btn" class="form-select" onchange="option_select(this,value)"> '+
    '<option value="Y">Yes</option> '+ // Y = RDL
    '<option value="N">No</option> </select> </td> '+ // N = RBL
