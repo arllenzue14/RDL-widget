@@ -34,6 +34,7 @@ document.getElementById("rating_col").addEventListener("click", function() {
      
 });
 
+//claim type update field
 function option_select(el, value){
    var elem = el.parentElement.parentElement;
    var id = elem.querySelector("input[class='d-none data_id']").value;    
@@ -51,6 +52,7 @@ function option_select(el, value){
    }
 }
 
+//apply decision date to RDL claims
 function ddate_call(value){
    data.claims.forEach(function(res,index){
        if(res.type == "Y"){ // Apply only for RDL claims
@@ -59,10 +61,12 @@ function ddate_call(value){
    });
 }
 
+// onRDL/rbl show decision date 
 function isRdl_call(value){
    data.onRDL = value;
 }
 
+//update claim field
 function field_call(el,value,field){
 
    var fields = {
@@ -93,6 +97,7 @@ function field_call(el,value,field){
    }
 }
 
+//fourth call fetch data
 function displayData(res_data, invoice_data){
    
    document.getElementById("tb_result").classList.remove("d-none");
@@ -146,6 +151,7 @@ function displayData(res_data, invoice_data){
 
 }
 
+//second call fetch data
 function getInvoice(filingKey, callback){
     ZOHO.embeddedApp.init()
     .then(function(){
@@ -168,6 +174,7 @@ function getInvoice(filingKey, callback){
     })
 }
 
+//first call fetch data
 function search_result(){
 
    document.getElementById("tb_body").innerHTML = "";
@@ -179,6 +186,9 @@ function search_result(){
        alert("Please enter a valid filling key");
         return 
     }
+
+    filingKey = filingKey.replace(/\(/g, "\\(");
+    filingKey = filingKey.replace(/\)/g, "\\)");
 
    var data_search = {
        filingKey: filingKey
@@ -222,6 +232,7 @@ document.querySelector('#input_txt').addEventListener('keypress', function (e) {
    }
 });
 
+//third call update data
 function getTransitionID(claim, callback){
     
     var config = 
@@ -244,6 +255,7 @@ function getTransitionID(claim, callback){
      });
 }
 
+//second call update data
 function get_user(callback){
     ZOHO.embeddedApp.init()
    .then(function(){
@@ -258,6 +270,7 @@ function get_user(callback){
    });
 }
 
+//third call fetch data
 function get_data(data_search, callback){
    ZOHO.embeddedApp.init()
    .then(function(){
@@ -271,6 +284,7 @@ function get_data(data_search, callback){
    })
 }
 
+//fourth call update data
 function update_data(data_update, user, transition_id, callback){
    ZOHO.embeddedApp.init()
    .then(function(){
@@ -332,6 +346,7 @@ function update_data(data_update, user, transition_id, callback){
    })
 }
 
+//first call update data
 function submit_btn(){
 
    document.getElementById("tb_update_body").innerHTML = "";
@@ -350,6 +365,7 @@ function submit_btn(){
 
 }
 
+//fifth call update data
 function status_update(claim_data, response_data){
    document.getElementById("update_status_result").classList.remove("d-none");
    var option_content = document.createElement("tr");
