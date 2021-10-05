@@ -5,6 +5,10 @@
     invoice: []
 }
 
+/**
+ * Hide and Show
+ * Decision Date
+ */
 document.getElementById("rdl_btn").addEventListener("click", function() {  
    document.getElementById("decisionDate_area").classList.remove("d-none");
 });
@@ -34,18 +38,22 @@ document.getElementById("rating_col").addEventListener("click", function() {
      
 });
 
-//claim type update field
-function option_select(el, value){
-   var elem = el.parentElement.parentElement;
-   var id = elem.querySelector("input[class='d-none data_id']").value;    
-   var index = _.findIndex(data.claims, {id:id});
-   data.claims[index].type = value;
 
-   if(value == "Y"){ // is RDL
+/**
+ * Claim type update OnRDL field
+ * show or hide status/rating/effective date 
+ */
+function option_select(el, value){ // el = element clicked, value = claim type Y/N
+   var elem = el.parentElement.parentElement; // get parent element
+   var id = elem.querySelector("input[class='d-none data_id']").value; // get id value from parent element
+   var index = _.findIndex(data.claims, {id:id}); // find claim index from data claims
+   data.claims[index].type = value; // assign new value to claim type
+
+   if(value == "Y"){ // is RDL show status/rating/effective date 
         elem.querySelector("select[id='status_btn']").classList.remove("d-none");
         elem.querySelector("select[id='rating_btn']").classList.remove("d-none");
         elem.querySelector("input[id='edate_value']").classList.remove("d-none");
-   }else if(value == "N"){ // is RBL
+   }else if(value == "N"){ // is RBL hide status/rating/effective date 
        elem.querySelector("select[id='status_btn']").classList.add("d-none");
        elem.querySelector("select[id='rating_btn']").classList.add("d-none");
        elem.querySelector("input[id='edate_value']").classList.add("d-none");
@@ -53,7 +61,7 @@ function option_select(el, value){
 }
 
 //apply decision date to RDL claims
-function ddate_call(value){
+function ddate_call(value){ // value = decision date
    data.claims.forEach(function(res,index){
        if(res.type == "Y"){ // Apply only for RDL claims
            data.claims[index].decicion_date = value;
@@ -62,28 +70,32 @@ function ddate_call(value){
 }
 
 // onRDL/rbl show decision date 
-function isRdl_call(value){
+function isRdl_call(value){// value = rdl/rbl
    data.onRDL = value;
 }
 
-//update claim field
-function field_call(el,value,field){
 
-   var fields = {
+/**
+ * update claim field value
+ * hide and show effective date
+ */
+function field_call(el,value,field){// el = element clicked, value = selected value, field = field number
+
+   var fields = { // list of field numbers
        "1" : "status", 
        "2" : "effective_date", 
        "3" : "rating", 
        "4" : "invoice"
    }
 
-   var elem = el.parentElement.parentElement;
-   var id = elem.querySelector("input[class='d-none data_id']").value;
-   var index = _.findIndex(data.claims, {id:id}); // claim index
+   var elem = el.parentElement.parentElement; // get parent element
+   var id = elem.querySelector("input[class='d-none data_id']").value;  // get id value from parent element
+   var index = _.findIndex(data.claims, {id:id}); // find claim index from data claims
    if(id != -1){
-       data.claims[index][fields[field]] = value;
+       data.claims[index][fields[field]] = value; // assign value
    }
 
-   var no_edate = [
+   var no_edate = [ // status with no effective date
         "Claim Denied",
         "Claim Deferred",
         "Claim Remanded",
@@ -97,21 +109,25 @@ function field_call(el,value,field){
    }
 }
 
-//fourth call fetch data
-function displayData(res_data, invoice_data){
+
+/**
+ * fourth call fetch data
+ * display claim data to table
+ */
+function displayData(res_data, invoice_data){// res_data = claim data, invoice_data = claim invoice data
    
-   document.getElementById("tb_result").classList.remove("d-none");
-   document.getElementById("submit_area").classList.remove("d-none");
-   document.getElementById("no_result").classList.add("d-none");
+   document.getElementById("tb_result").classList.remove("d-none");// show table
+   document.getElementById("submit_area").classList.remove("d-none");// show submit button
+   document.getElementById("no_result").classList.add("d-none"); // hide no result
 
-   var option_class = (res_data.Claim_Status == "Claim Remanded" || res_data.Claim_Status == "Claim Deferred") ? "d-none" : "";
+   var option_class = (res_data.Claim_Status == "Claim Remanded" || res_data.Claim_Status == "Claim Deferred") ? "d-none" : ""; // hide class for remanded/deferred status
 
-   document.getElementById("decisionDate_area").classList.remove("d-none");
-   document.getElementById("isRdl_area").classList.remove("d-none");
+   document.getElementById("decisionDate_area").classList.remove("d-none"); // show decicion date picker
+   document.getElementById("isRdl_area").classList.remove("d-none"); // show RDL/RBL option
    
    var option_content = document.createElement("tr");
-   var laterality = (res_data.Laterality != null && res_data.Laterality != "N/A") ? " - "+res_data.Laterality : "";
-   var Date_Packet_Sent = (res_data.Date_Packet_Sent != null) ? res_data.Date_Packet_Sent+" - " : "";
+   var laterality = (res_data.Laterality != null && res_data.Laterality != "N/A") ? " - "+res_data.Laterality : ""; // claim laterality value
+   var Date_Packet_Sent = (res_data.Date_Packet_Sent != null) ? res_data.Date_Packet_Sent+" - " : ""; // claim date packet sent value
    option_content.innerHTML = '<th scope="row"><input class="d-none data_id" value="'+res_data.id+'"><span>'+Date_Packet_Sent+res_data.Claim_Categories+" - "+res_data.Claim_SubType+laterality+'</span> </th> '+
    '<td> <select id="isRdl_btn" class="form-select" onchange="option_select(this,value)"> '+
    '<option value="Y">Yes</option> '+ // Y = RDL
@@ -151,8 +167,12 @@ function displayData(res_data, invoice_data){
 
 }
 
-//second call fetch data
-function getInvoice(filingKey, callback){
+
+/**
+ * second call fetch data
+ * get client invoice
+ */
+function getInvoice(filingKey, callback){// fillingkey = client filling key, callback = array of client invoice
     ZOHO.embeddedApp.init()
     .then(function(){
         ZOHO.CRM.API.searchRecord({Entity:"Billing",Type:"criteria",Query:'(Filing_Key:equals:'+filingKey+')', page:1,per_page:100})
@@ -174,7 +194,10 @@ function getInvoice(filingKey, callback){
     })
 }
 
-//first call fetch data
+/**
+ * first call fetch data
+ * process filling key
+ */
 function search_result(){
 
    document.getElementById("tb_body").innerHTML = "";
@@ -187,6 +210,7 @@ function search_result(){
         return 
     }
 
+    //remove '(' and ')' from a filling key
     filingKey = filingKey.replace(/\(/g, "\\(");
     filingKey = filingKey.replace(/\)/g, "\\)");
 
@@ -194,8 +218,8 @@ function search_result(){
        filingKey: filingKey
    }
 
-   getInvoice(filingKey, function(invoice_data){
-        get_data(data_search, function(result){
+   getInvoice(filingKey, function(invoice_data){// callback client invoices
+        get_data(data_search, function(result){// callback client claims
             if(result.data){
                 result.data.forEach(function(res){
                     data.claims.push({
@@ -209,9 +233,10 @@ function search_result(){
                         laterality: res.Laterality,
                         invoice:""
                     });
-                    displayData(res,invoice_data);
+                    displayData(res,invoice_data);// display claim to table
                 })
             }else{
+                //No results
                 data.claims = [];
                 document.getElementById("tb_result").classList.add("d-none");
                 document.getElementById("submit_area").classList.add("d-none");
@@ -226,14 +251,19 @@ function search_result(){
 
 }
 
+//enter listner
 document.querySelector('#input_txt').addEventListener('keypress', function (e) {
    if (e.key === 'Enter') {
        search_result();
    }
 });
 
-//third call update data
-function getTransitionID(claim, callback){
+
+/**
+ * third call update data
+ * get claim transition ID
+ */
+function getTransitionID(claim, callback){ // claim = claim data, callback transition ID
     
     var config = 
     {
@@ -243,8 +273,8 @@ function getTransitionID(claim, callback){
 
     ZOHO.embeddedApp.init()
     .then(function(){
-        ZOHO.CRM.API.getBluePrint(config).then(function(res_blueprint){
-            var index = _.findIndex(res_blueprint.blueprint.transitions, {name:claim.status}); // transition index
+        ZOHO.CRM.API.getBluePrint(config).then(function(res_blueprint){ // return claim available transitions
+            var index = _.findIndex(res_blueprint.blueprint.transitions, {name:claim.status}); // get transition index base on selected claim status
             if(index != -1){
                 callback(res_blueprint.blueprint.transitions[index].id);
             }
@@ -255,8 +285,11 @@ function getTransitionID(claim, callback){
      });
 }
 
-//second call update data
-function get_user(callback){
+/**
+ * second call update data
+ * get user full name
+ */
+function get_user(callback){ // callback user fullname
     ZOHO.embeddedApp.init()
    .then(function(){
         ZOHO.CRM.CONFIG.getCurrentUser().then(function(data){
@@ -270,8 +303,12 @@ function get_user(callback){
    });
 }
 
-//third call fetch data
-function get_data(data_search, callback){
+
+/**
+ * third call fetch data
+ * get client claims
+ */
+function get_data(data_search, callback){ // data_search = filling key, callback array of client claims
    ZOHO.embeddedApp.init()
    .then(function(){
        ZOHO.CRM.API.searchRecord({Entity:"Claims",Type:"criteria",Query:'((Name:equals:'+data_search.filingKey+') and ((Claim_Status:equals:Packet Sent) or (Claim_Status:equals:Claim Deferred) or (Claim_Status:equals:Claim Remanded)))', page:1,per_page:100})
@@ -284,8 +321,12 @@ function get_data(data_search, callback){
    })
 }
 
-//fourth call update data
-function update_data(data_update, user, transition_id, callback){
+
+/**
+ * fourth call update data
+ * transition and update claim data
+ */
+function update_data(data_update, user, transition_id, callback){//data_update = claims data, user = user fullname, transition_id = transition id, callback blueprint data
    ZOHO.embeddedApp.init()
    .then(function(){
 
@@ -308,7 +349,7 @@ function update_data(data_update, user, transition_id, callback){
                 }
         }
 
-        if(data.onRDL == "rdl"){
+        if(data.onRDL == "rdl"){ // add decision date if on rdl
             status_data["Date_Notified_of_Decision"] = data_update.decicion_date;
         }
 
@@ -317,6 +358,7 @@ function update_data(data_update, user, transition_id, callback){
             status_data["Invoice"] = data.invoice[index].id;
         }
 
+        // construct blueprint data
         var BlueprintData = 
             {
                 "blueprint": [
@@ -346,7 +388,11 @@ function update_data(data_update, user, transition_id, callback){
    })
 }
 
-//first call update data
+
+/**
+ * first call update data
+ * handle sumbit button
+ */
 function submit_btn(){
 
    document.getElementById("tb_update_body").innerHTML = "";
@@ -365,7 +411,10 @@ function submit_btn(){
 
 }
 
-//fifth call update data
+/**
+ * first call update data
+ * display update results to table
+ */
 function status_update(claim_data, response_data){
    document.getElementById("update_status_result").classList.remove("d-none");
    var option_content = document.createElement("tr");
